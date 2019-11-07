@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, } from 'react-native';
+import Logo from '../components/Logo';
 
+import Svg, { Image, Circle, ClipPath } from 'react-native-svg';
 import Animated, { Easing } from 'react-native-reanimated';
-import { TapGestureHandler, State, TextInput } from 'react-native-gesture-handler';
+import { TapGestureHandler, State, TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 const { width, height } = Dimensions.get('window');
 
 const {
@@ -51,9 +53,16 @@ function runTiming(clock, value, dest) {
     state.position
   ]);
 }
-class MusicApp extends Component {
-  constructor() {
-    super();
+class Login extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      signin: true,
+      username:'',
+      password: '',
+      error: 0,
+      errmsg:''
+    };
 
     this.buttonOpacity = new Value(1);
 
@@ -75,7 +84,7 @@ class MusicApp extends Component {
           block([
             cond(
               eq(state, State.END),
-              set(this.buttonOpacity, runTiming(new Clock(),0,1))
+              set(this.buttonOpacity, runTiming(new Clock(), 0, 1))
             )
           ])
       }
@@ -89,35 +98,90 @@ class MusicApp extends Component {
 
     this.bgY = interpolate(this.buttonOpacity, {
       inputRange: [0, 1],
-      outputRange: [-height / 3, 0],
+      outputRange: [-height / 3 - 60, 0],
       extrapolate: Extrapolate.CLAMP
     });
 
     this.textInputZindex = interpolate(this.buttonOpacity, {
       inputRange: [0, 1],
-      outputRange: [1,-1],
+      outputRange: [1, -1],
       extrapolate: Extrapolate.CLAMP
     });
 
     this.textInputY = interpolate(this.buttonOpacity, {
       inputRange: [0, 1],
-      outputRange: [0,100],
+      outputRange: [0, 100],
       extrapolate: Extrapolate.CLAMP
     });
 
     this.textInputOpacity = interpolate(this.buttonOpacity, {
       inputRange: [0, 1],
-      outputRange: [1,0],
+      outputRange: [1, 0],
       extrapolate: Extrapolate.CLAMP
     });
 
     this.rotateCross = interpolate(this.buttonOpacity, {
       inputRange: [0, 1],
-      outputRange: [180,360],
+      outputRange: [180, 360],
       extrapolate: Extrapolate.CLAMP
     });
   }
+
+  updateValue(text, field) {
+
+    const alph = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    const passreg = /^(?=.*\d).{4,8}$/;
+    if (field == 'username') {
+      if (alph.test(text)) {
+        this.setState({
+          username: text,
+          error:1,
+        })
+      }
+      else {
+        console.log('inavlid Username',this.state.username);
+        this.setState({ errmsg: 'Enter valid email address / Username !', error: 1 })
+      }
+      this.setState({
+        username: text,
+      })
+    }
+    else if (field == 'password') {
+      if (passreg.test(text)) {
+        this.setState({
+          password: text,
+          error:0
+        })
+      }
+      else {
+        console.log('inavlid password',this.state.password);
+        this.setState({ errmsg: 'Enter Minimum eight characters, at least one letter and one number !', error: 1, })
+      }
+      this.setState({
+        password: text,
+      })
+    }
+  }
+
+  signin() {
+    console.log('ERROR :',this.state.error)
+    if(this.state.error == 0){
+      console.log('USER ',this.state.username,this.state.password);
+      if(this.state.password =='' && this.state.username ==''){
+        alert('Please enter details');
+      }
+      else{
+        this.props.navigation.navigate('home');
+      }
+    }
+    else{
+      console.log('USER ',this.state.username,this.state.password);
+      alert(this.state.errmsg);
+    }
+  }
   render() {
+    console.disableYellowBox = true;
+    console.log('SIGN IN :', this.state.signin);
     return (
       <View
         style={{
@@ -126,18 +190,33 @@ class MusicApp extends Component {
           justifyContent: 'flex-end'
         }}
       >
+        
         <Animated.View
           style={{
             ...StyleSheet.absoluteFill,
             transform: [{ translateY: this.bgY }]
           }}
         >
-          <Image
-            source={require('../images/bg.jpg')}
-            style={{ flex: 1, height: null, width: null }}
-          />
+          <Svg height={height + 50} width={width}  >
+            <ClipPath id="clip">
+              <Circle r={height + 50} cx={width / 2} />
+            </ClipPath>
+            <Image
+              href={require('../images/bg.jpg')}
+              width={width}
+              height={height + 50}
+              preserveAspectRatio="xMidYMid slice"
+              clipPath="url(#clip)"
+              opacity="0.9"
+            />
+          </Svg>
         </Animated.View>
+        <View style={{ height: height / 2, justifyContent: 'center', alignItems: 'center' }}>
+          <Logo size={180} />
+        </View>
         <View style={{ height: height / 3, justifyContent: 'center' }}>
+
+
           <TapGestureHandler onHandlerStateChange={this.onStateChange}>
             <Animated.View
               style={{
@@ -146,61 +225,88 @@ class MusicApp extends Component {
                 transform: [{ translateY: this.buttonY }]
               }}
             >
-              <Text style={{ fontSize: 20, fontWeight: 'bold' }}>SIGN IN</Text>
+              <TouchableOpacity onPress={() => this.setState({ signin: true })}>
+                <Text style={{ fontSize: 20, fontWeight: 'bold' }}>SIGN IN</Text>
+              </TouchableOpacity>
             </Animated.View>
           </TapGestureHandler>
-          <Animated.View
-            style={{
-              ...styles.button,
-              backgroundColor: '#2E71DC',
-              opacity: this.buttonOpacity,
-              transform: [{ translateY: this.buttonY }]
-            }}
-          >
-            <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>
-              REGISTER NOW !
-            </Text>
-          </Animated.View>
+
+
+          <TapGestureHandler onHandlerStateChange={this.onStateChange}>
+            <Animated.View
+              style={{
+                ...styles.button,
+                backgroundColor: '#2E71DC',
+                opacity: this.buttonOpacity,
+                transform: [{ translateY: this.buttonY }]
+              }}
+            >
+              <TouchableOpacity onPress={() => this.setState({ signin: false })}>
+                <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>
+                  REGISTER NOW !
+              </Text>
+              </TouchableOpacity>
+            </Animated.View>
+          </TapGestureHandler>
+
           <Animated.View style={{
             zIndex: this.textInputZindex,
             opacity: this.textInputOpacity,
-            transform: [{translateY: this.textInputY}],
-            height: height/3,
+            transform: [{ translateY: this.textInputY }],
+            height: height / 3,
             ...StyleSheet.absoluteFill,
-            top:null,
-            justifyContent:'center'
-            }}>
+            top: null,
+            justifyContent: 'center'
+          }}>
 
-              <TapGestureHandler onHandlerStateChange={this.onCloseState}>
-                <Animated.View style={styles.closeButton}>
-                  <Animated.Text style={{ 
-                          fontSize: 15, 
-                          transform:[{rotate: concat(this.rotateCross,'deg')}]
-                          }}>
-                    X
+            <TapGestureHandler onHandlerStateChange={this.onCloseState}>
+              <Animated.View style={styles.closeButton}>
+                <Animated.Text style={{
+                  fontSize: 15,
+                  transform: [{ rotate: concat(this.rotateCross, 'deg') }]
+                }}>
+                  X
                   </Animated.Text>
-                </Animated.View>
-              </TapGestureHandler>
+              </Animated.View>
+            </TapGestureHandler>
+            <View style={styles.inputview}>
               <TextInput
-                placeholder='Username'
+                placeholder='Email'
                 style={styles.textInput}
-                placeholderTextColor='black'
+                placeholderTextColor='#DBC6C6'
+                autoCapitalize='none'
+                onChangeText={(text) => this.updateValue(text, 'username')}
+                keyboardType="email-address"
+                returnKeyType='next'
+                onSubmitEditing={() => this.refs.pass.focus()}
               />
               <TextInput
                 placeholder='password'
                 style={styles.textInput}
                 placeholderTextColor='black'
+                placeholderTextColor='#DBC6C6'
+                autoCapitalize='none'
+                returnKeyType='go'
+                onChangeText={(text) => this.updateValue(text, 'password')}
+                ref="pass"
               />
-              <Animated.View style={styles.button}>
-                  <Text style={{ fontSize: 20, fontWeight: 'bold'}}>SIGN IN</Text>
-              </Animated.View>
+              {this.state.signin ?
+                <TouchableOpacity style={{ ...styles.button, backgroundColor: 'gray' }} onPress={() => this.signin()}>
+                  <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>SIGN IN</Text>
+                </TouchableOpacity>
+                :
+                <TouchableOpacity style={{ ...styles.button, backgroundColor: 'gray' }} onPress={() => this.signin()}>
+                  <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>SIGN UP</Text>
+                </TouchableOpacity>
+              }
+            </View>
           </Animated.View>
         </View>
       </View>
     );
   }
 }
-export default MusicApp;
+export default Login;
 
 const styles = StyleSheet.create({
   container: {
@@ -213,28 +319,29 @@ const styles = StyleSheet.create({
     height: 70,
     marginHorizontal: 20,
     borderRadius: 35,
+    borderColor: 'black',
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 5,
-    shadowOffset: { width: 2, height:2 },
+    shadowOffset: { width: 2, height: 2 },
     shadowColor: 'black',
     shadowOpacity: 0.2,
   },
-  closeButton:{
+  closeButton: {
     height: 40,
     width: 40,
     backgroundColor: 'white',
     borderRadius: 20,
     alignItems: 'center',
-    justifyContent:'center',
+    justifyContent: 'center',
     position: 'absolute',
     top: -20,
-    left: width /2 - 20,
-    shadowOffset: { width: 2, height:2 },
+    left: width / 2 - 20,
+    shadowOffset: { width: 2, height: 2 },
     shadowColor: 'black',
     shadowOpacity: 0.2,
   },
-  textInput:{
+  textInput: {
     height: 50,
     borderRadius: 25,
     borderWidth: 0.5,
@@ -242,5 +349,10 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     marginVertical: 5,
     borderColor: 'rgba(0,0,0,0.2)'
+  },
+  inputview: {
+    borderRadius: 20,
+    backgroundColor: 'white',
+    margin: 10,
   }
 });
