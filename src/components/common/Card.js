@@ -14,18 +14,22 @@ export { Card } ;
 
 const Styles=StyleSheet.create({
     Container:{
+        margin:10,
+        flexDirection:'row',
+        //backgroundColor:'white',
+        padding:9,
         borderWidth:1,
         borderRadius:2,
         borderColor:'#2f4f4f',
         borderBottomWidth:0,
-        shadowColor:'#228b22',
-        shadowOffset:{width:0,height:2},
-        shadowOpacity:0.1,
-        shadowRadius:2,
-        elevation:1,
+        //shadowColor:'#228b22',
+        //shadowOffset:{width:0,height:2},
+        //shadowOpacity:0.1,
+        //shadowRadius:2,
+        //elevation:1,
         marginLeft: 5,
         marginRight:5,
         marginTop:10,
-
+        borderRadius:5
     }
 })

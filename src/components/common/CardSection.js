@@ -4,7 +4,7 @@ import { View ,StyleSheet} from 'react-native';
 const CardSection = (props) => {
     const {container}=Styles
     return(
-    <View style={[container,props.style]}>
+    <View style={{...container,height:props.height?props.height:'auto', width:'96%'}}>
       {props.children}
     </View>
 );
@@ -19,9 +19,9 @@ const Styles=StyleSheet.create({
         padding:5,
         backgroundColor:'white',
         justifyContent:'flex-start',
-        flexDirection:'row',
         borderColor:'black',
-        position:'relative'
-
+        position:'relative',
+        borderRadius: 10,
+        marginBottom: 5,
     }
 })

@@ -12,8 +12,8 @@ const AppStack = createStackNavigator({
             header:null,
         },
     },
-    Profile:{
-        screen:Profile,
+    Add:{
+        screen: AddLec,
         navigationOptions:{
             header:null
         }
@@ -33,9 +33,13 @@ const AppStack = createStackNavigator({
             header:null,
         },
     },
-    Add:{
-        screen: AddLec
+    Profile:{
+        screen:Profile,
+        navigationOptions:{
+            header:null
+        }
     },
+    
     
 })
 
