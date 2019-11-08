@@ -16,10 +16,9 @@ const Button = ({onPress,children}) => {
 const Styles=StyleSheet.create({
     buttonStyle:{
         flex:1,
-        marginTop:10,
         alignSelf:'stretch',
         backgroundColor:'#f8f8ff',
-        borderColor:'#1e90ff',
+        borderColor:'gray',
         borderWidth:1,
         marginLeft:10,
         marginRight:10,

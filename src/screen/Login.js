@@ -197,7 +197,7 @@ class Login extends Component {
             transform: [{ translateY: this.bgY }]
           }}
         >
-          <Svg height={height + 50} width={width}  >
+          <Svg height={height + 50} width={width+50}  >
             <ClipPath id="clip">
               <Circle r={height + 50} cx={width / 2} />
             </ClipPath>

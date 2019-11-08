@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Dimensions, Text, Picker } from 'react-native';
-import Svg, { Image, ClipPath, Ellipse } from 'react-native-svg';
+import { View, StyleSheet, Dimensions, Text, Picker, } from 'react-native';
+import Svg, { Image, } from 'react-native-svg';
 import Animated from 'react-native-reanimated';
 import AddImage from '../components/AddImage';
 import IconAnt from 'react-native-vector-icons/AntDesign';
@@ -9,15 +9,50 @@ import style from '../style';
 import { Card, CardSection, Input, CardRow, Button } from '../components/common';
 import Label from '../components/common/Label';
 import Logo from '../components/Logo';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 class AddLec extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      date: new Date('2020-06-12T14:42:42'),
+      mode: 'date',
+      show: false,
     };
+  }
+  setDate = (event, date) => {
+    date = date || this.state.date;
+
+    this.setState({
+      show: Platform.OS === 'ios' ? true : false,
+      date,
+    });
+  }
+
+  state = {
+    date: new Date('2020-06-12T14:42:42'),
+    mode: 'date',
+    show: false,
+  }
+
+  show = mode => {
+    this.setState({
+      show: true,
+      mode,
+    });
+  }
+
+  datepicker = () => {
+    this.show('date');
+  }
+
+  timepicker = () => {
+    this.show('time');
   }
 
   render() {
+    const { show, date, mode } = this.state;
     return (
       <View style={{ flex: 1 }}>
         <View style={{ height: 30, width: 25, position: 'absolute', zIndex: 2, marginTop: 10 }}>
@@ -51,9 +86,20 @@ class AddLec extends Component {
         </Animated.View>
         <View style={{ ...style.contentAdd, flex: 1 }}>
           <Logo size={150} />
+
           <CardSection height={50}>
             <CardRow>
-              <Label>DATE</Label>
+              <View style={{ flex:1}}>
+                  <Label>DATE</Label>
+              </View>
+              <View style={{ flex:1,...style.center}}>
+                <Text style={{ fontSize:20}}>text</Text>
+              </View>
+              <View style={{ flex:2,...style.center}}>
+                  <TouchableOpacity onPress={this.datepicker} style={style.buttonStyle}>
+                    <Text style={style.textStyle}>Select Date</Text>
+                  </TouchableOpacity>
+              </View>
             </CardRow>
           </CardSection>
 
@@ -61,8 +107,8 @@ class AddLec extends Component {
             <CardRow>
               <Label>CLASS</Label>
               <Picker
-                itemStyle={{color:'red'}}
-                style={{ flex: 1,marginLeft:5 }}
+                itemStyle={{ color: 'red' }}
+                style={{ flex: 1, marginLeft: 5 }}
                 selectedValue={this.props.sub}
                 onValueChange={value => this.props.subUpdate({ prop: 'shift', value })}
               >
@@ -76,21 +122,50 @@ class AddLec extends Component {
 
           <CardSection height={50}>
             <CardRow>
-              <Label>FROM</Label>
+              <View style={{ flex:1}}>
+                  <Label>FROM</Label>
+              </View>
+              <View style={{ flex:1,...style.center}}>
+                <Text style={{ fontSize:20}}>text</Text>
+              </View>
+              <View style={{ flex:2,...style.center}}>
+                  <TouchableOpacity onPress={this.timepicker} style={style.buttonStyle}>
+                    <Text style={style.textStyle}>Select Time</Text>
+                  </TouchableOpacity>
+              </View>
             </CardRow>
           </CardSection>
 
           <CardSection height={50}>
             <CardRow>
-              <Label>TO</Label>
+              <View style={{ flex:1}}>
+                  <Label>TO</Label>
+              </View>
+              <View style={{ flex:1,...style.center}}>
+                <Text style={{ fontSize:20}}>text</Text>
+              </View>
+              <View style={{ flex:2,...style.center}}>
+                  <TouchableOpacity onPress={this.timepicker} style={style.buttonStyle}>
+                  <Text style={style.textStyle}>Select Time</Text>
+                  </TouchableOpacity>
+              </View>
             </CardRow>
           </CardSection>
 
-          <CardSection height={60}>
-            <Button onPress={this.onButonPress}>
-              ADD
+          <CardSection height={50}>
+          <Button onPress={ this.onTextPress}>
+                  ADD
               </Button>
           </CardSection>
+
+            <View>
+              {show && <DateTimePicker value={date}
+                mode={mode}
+                is24Hour={true}
+                display="default"
+                onChange={this.setDate} />
+              }
+            </View>
 
         </View>
       </View>

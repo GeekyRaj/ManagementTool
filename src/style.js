@@ -49,6 +49,24 @@ const style = StyleSheet.create({
         fontSize:25,
         marginBottom:10,
         fontWeight:'bold'
-    }
+    },
+    //BUTTON
+    buttonStyle:{
+        flex:1,
+        alignSelf:'stretch',
+        backgroundColor:'#f8f8ff',
+        borderColor:'gray',
+        borderWidth:1,
+        borderRadius:5,
+        },
+        textStyle:{
+            alignSelf:'center',
+            fontSize:20,
+            color:'black',
+            fontWeight:'600',
+            padding:5,
+            //fontFamily:AppFonts.extraBold
+             
+        }
 })
 export default style;
